@@ -1,0 +1,29 @@
+{
+  "name": "restrodbmanagement",
+  "version": "1.0.0",
+  "description": "This repo has the api for various CRUD operation on a sample restaurant DB with multiple libraries for different purposes.",
+  "main": "js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "express": "npm install express",
+    "cors": "npm install cors",
+    "mongoose": "npm install mongoose",
+    "nodemon": "npm install nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BhupinderSinghVirdi/RestaurantDBManagement.git"
+  },
+  "author": "Bhupinder Singh Virdi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BhupinderSinghVirdi/RestaurantDBManagement/issues"
+  },
+  "homepage": "https://github.com/BhupinderSinghVirdi/RestaurantDBManagement#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongoose": "^6.7.4",
+    "nodemon": "^2.0.20"
+  }
+}
