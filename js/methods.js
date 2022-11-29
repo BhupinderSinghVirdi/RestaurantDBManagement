@@ -8,31 +8,49 @@ const exphbs = require("express-handlebars");
 const { default: mongoose, connection } = require("mongoose");
 const { resolve } = require("path");
 const restaurants = require("../models/restaurants");
+let record;
 
 let methods = {
   initialize: (connectionString) => {
     new Promise((resolve, reject) => {
       connection = mongoose.connect(connectionString);
-      connection.once('open', () => {
-        this.Restaurant = db.model('restaurants', restaurants);
+      console.log(connection);
+      connection.once("open", () => {
+        mongoose.model("restaurants", restaurants);
         resolve();
       });
-      connection.once('error', (err) => {
+      connection.once("error", (err) => {
         reject(err);
       });
     });
   },
-  addNewRestaurant: (data) => {},
-  getAllRestaurants: (page, perPage, borough) => {},
+  addNewRestaurant: (data) => {
+    new Promise(() => {
+        record = restaurants.insertOne(data).exec();
+      })
+        .then(console.log(record))
+        .catch(console.log(err));
+
+  },
   getRestaurantById: (id) => {
-    restaurants.findOne({ _id: id }).exec();
+    new Promise(() => {
+      record = restaurants.findOne({ _id: id }).exec();
+    })
+      .then(console.log(record))
+      .catch(console.log(err));
   },
   updateRestaurantByid: (data, id) => {
-    restaurants.updateOne({ _id: id }, { $set: data }).exec();
+    new Promise(() => {
+        restaurants.updateOne({ _id: id }, { $set: data }).exec();
+    })
+      .then(console.log(record))
+      .catch(console.log(err));
   },
   deleteRestaurantById: (id) => {
-    restaurants.deleteOne({ _id: id}).exec();
+    restaurants.deleteOne({ _id: id }).exec();
   },
+  // to be covered in second phase of the project.
+  getAllRestaurants: (page, perPage, borough) => {},
 };
 
 module.exports = methods;
