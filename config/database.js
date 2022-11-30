@@ -11,7 +11,7 @@ require("dotenv").config();
 const database = process.env.DATABASE;
 const username = process.env.USERNAME;
 const password = process.env.PASSWORD;
-
+console.log(username)
 module.exports = {
-  url: `mongodb+srv://${username}:${password}@semester3web.0bbcsui.mongodb.net/${database}`,
+  url: `mongodb+srv://admin:${password}@semester3web.0bbcsui.mongodb.net/${database}`
 };
