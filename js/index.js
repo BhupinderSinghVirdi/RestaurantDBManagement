@@ -30,13 +30,34 @@ require("dotenv").config();
 //this module the following routes to Our WEB api
 
 /*
+    Route for the api to get restaurants in sorted by restaurant id but search done with page, pageNumber and Borough parameters
+*/
+app.get("/api/restaurants", (req, res) => {
+  let page = req.query.page;
+  let perPage = req.query.perPage;
+  let borough = req.query.borough;
+
+  console.log(borough)
+  db.getAllRestaurants(page, perPage, borough)
+    .then((data) => {
+      console.log(data)
+      res.status(200).json({ data });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: `Server error: ${err}`,
+      });
+    });
+});
+
+/*
     Route for the api to get a particular restaurant with it's id
 */
 app.get("/api/restaurants/:id", (req, res) => {
   let id = req.params.id;
   db.getRestaurantById(id)
     .then((data) => {
-      res.status(200).json({data});
+      res.status(200).json({ data });
     })
     .catch((err) => {
       res.status(500).json({
@@ -72,7 +93,7 @@ app.put("/api/restaurants/:id", (req, res) => {
   db.updateRestaurantById(req.body, id)
     .then(() => {
       res.status(204).json({
-        message: `The record with id ${id} updated successfully!`
+        message: `The record with id ${id} updated successfully!`,
       });
     })
     .catch((err) => {

@@ -10,7 +10,7 @@
 // This file contains all the promise-based methods required for the API
 // also these methods are further wired to index.js
 
-const { default: mongoose, connection, model } = require("mongoose");
+const { default: mongoose} = require("mongoose");
 let restaurants = require("../models/restaurants");
 let document, modelSchema;
 
@@ -35,8 +35,17 @@ let methods = {
   deleteRestaurantById: async (id) => {
     await modelSchema.deleteOne({ _id: id }).exec();
   },
-  // to be covered in second phase of the project.
-  getAllRestaurants: (page, perPage, borough) => {},
+  getAllRestaurants: async (page, perPage, borough) => {
+    if (page && perPage && borough) {
+      return await modelSchema
+        .find({'borough' : borough})
+        .sort({'restaurant_id': 1})
+        .skip((page - 1) * +perPage)
+        .limit(perPage);
+    } else {
+      return Promise.reject("Error: Missing parameters in the query string");
+    }
+  },
 };
 
 module.exports = methods;
