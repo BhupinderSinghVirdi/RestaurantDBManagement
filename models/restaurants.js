@@ -13,7 +13,6 @@ const { ObjectID } = require("bson");
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 restaurants = new Schema({
-    _id: ObjectID,
     address: {
         building: String,
         coord: { 
@@ -27,8 +26,8 @@ restaurants = new Schema({
     grades: [{
             date: Date,
             grade: String,
-            Score: Number
-        }
+            score: Number,
+        },
     ],
     name: String,
     restaurant_id: String,

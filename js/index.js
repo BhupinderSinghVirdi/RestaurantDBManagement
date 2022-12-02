@@ -36,7 +36,7 @@ app.get("/api/restaurants/:id", (req, res) => {
   let id = req.params.id;
   db.getRestaurantById(id)
     .then((data) => {
-      res.status(200).json(data);
+      res.status(200).json({data});
     })
     .catch((err) => {
       res.status(500).json({
@@ -71,12 +71,12 @@ app.put("/api/restaurants/:id", (req, res) => {
   let id = req.params.id;
   db.updateRestaurantById(req.body, id)
     .then(() => {
-      res.sendStatus(204).json({
-        message: `The record with id ${id} updated successfully!`,
+      res.status(204).json({
+        message: `The record with id ${id} updated successfully!`
       });
     })
     .catch((err) => {
-      res.sendStatus(500).json({
+      res.status(500).json({
         message: `Server error: ${err}`,
       });
     });
@@ -89,7 +89,7 @@ app.delete("/api/restaurants/:id", (req, res) => {
   let id = req.params.id;
   db.deleteRestaurantById(id)
     .then(() => {
-      res.sendStatus(204).json({
+      res.status(204).json({
         message: `The restaurant with id ${id} deleted successfully!`,
       });
       res.status(204).end();
