@@ -15,6 +15,7 @@ let connect_url = require("../config/database");
 const { query, validationResult } = require("express-validator");
 const { url } = require("inspector");
 const auth = require("../js/auth.js");
+const exphbs = require("express-handlebars");
 
 var port = process.env.PORT || 8000;
 require("dotenv").config();
@@ -23,9 +24,39 @@ app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: "application/vnd.api+json" })); // parse application/vnd.api+json as json
 
 require("dotenv").config();
+
+const HBS = exphbs.create({
+  //Create custom HELPER
+  helpers: {
+    sample: function () {
+      return 100;
+    },
+    calculation: function (num) {
+      return (calculation = num + 10);
+    },
+    strong: function (options) {
+      return "<strong>" + options.fn(this);
+    },
+  },
+});
+
+app.engine(".hbs", HBS.engine);
+app.set("view engine", ".hbs");
+
+
 // query validation
 
 //mongoose.connect(database.url);
+
+// UI routes :
+
+app.get("/getDisplayDetails", (req, res) => {
+
+  res.render("Table", {
+    data: {},
+    layout: false
+  });
+})
 
 //this module the following routes to Our WEB api
 
