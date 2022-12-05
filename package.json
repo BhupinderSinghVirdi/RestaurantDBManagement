@@ -12,7 +12,8 @@
     "dotenv": "npm install dotenv",
     "express-val": "npm install express-validator",
     "express-handlebars": "npm install express-handlebars",
-    "jsonwebtoken": "npm install jsonwebtoken"
+    "jsonwebtoken": "npm install jsonwebtoken",
+    "bcrypt": "npm install bcryptjs"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/BhupinderSinghVirdi/RestaurantDBManagement#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",

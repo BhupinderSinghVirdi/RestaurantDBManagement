@@ -9,12 +9,12 @@
 
 var express = require("express");
 const app = express();
-const path = require("path");
 var bodyParser = require("body-parser");
 const db = require("./methods");
 let connect_url = require("../config/database");
 const { query, validationResult } = require("express-validator");
 const { url } = require("inspector");
+const auth = require("../js/auth.js");
 
 var port = process.env.PORT || 8000;
 require("dotenv").config();
@@ -30,17 +30,63 @@ require("dotenv").config();
 //this module the following routes to Our WEB api
 
 /*
+  Route to add the user to DB to gather the entered password
+*/
+app.post("/api/restaurantusers/register", (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!(name && email && password)) {
+    res.status(400).json({
+      message: `Bad Request. Please provide all details in the request.`,
+    });
+  }
+
+  db.registerUser(name, email, password)
+    .then((data) => {
+      res.status(200).json({ data });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: `Server error: ${err}`,
+      });
+    });
+});
+
+/*
+  Route to verify the password and generate auth token for other routes
+*/
+app.post("/api/restaurantusers/login",(req, res) => {
+  const { email, password } = req.body;
+
+  // Validate user input
+  if (!(email && password)) {
+    res.status(400).json({
+      message: `All input is required`,
+    });
+  }
+  db.loginUser(email, password)
+    .then((data) => {
+      res.status(200).json({ data });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: `Server error: ${err}`,
+      });
+    });
+});
+
+/*
     Route for the api to get restaurants in sorted by restaurant id but search done with page, pageNumber and Borough parameters
 */
-app.get("/api/restaurants", (req, res) => {
+app.get("/api/restaurants", auth , (req, res) => {
   let page = req.query.page;
   let perPage = req.query.perPage;
   let borough = req.query.borough;
 
-  console.log(borough)
+  console.log(borough);
   db.getAllRestaurants(page, perPage, borough)
     .then((data) => {
-      console.log(data)
+      console.log(data);
       res.status(200).json({ data });
     })
     .catch((err) => {

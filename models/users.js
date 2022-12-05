@@ -11,24 +11,11 @@
 // load mongoose since we need it to define a model
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-restaurants = new Schema({
-    address: {
-        building: String,
-        coord: { 
-            type: Array, default: []
-        },
-        street: String,
-        zipcode: String
-    },
-    borough: String,
-    cuisine: String,
-    grades: [{
-            date: Date,
-            grade: String,
-            score: Number,
-        },
-    ],
-    name: String,
-    restaurant_id: String,
+
+const user = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
 });
-module.exports = restaurants;
+
+module.exports = mongoose.model("users", user);
