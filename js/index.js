@@ -99,7 +99,7 @@ app.get("/api/restaurants", auth , (req, res) => {
 /*
     Route for the api to get a particular restaurant with it's id
 */
-app.get("/api/restaurants/:id", (req, res) => {
+app.get("/api/restaurants/:id", auth,(req, res) => {
   let id = req.params.id;
   db.getRestaurantById(id)
     .then((data) => {
@@ -115,7 +115,7 @@ app.get("/api/restaurants/:id", (req, res) => {
 /*
     Route for the api to insert a particular restaurant(document).
 */
-app.post("/api/restaurants", (req, res) => {
+app.post("/api/restaurants", auth, (req, res) => {
   // MUST return HTTP 201
   db.addNewRestaurant(req.body)
     .then((restaurant) => {
@@ -134,7 +134,7 @@ app.post("/api/restaurants", (req, res) => {
 /*
     Route for the api to update a particular restaurant with it's id as the search filter and data as the upsert argument
 */
-app.put("/api/restaurants/:id", (req, res) => {
+app.put("/api/restaurants/:id", auth, (req, res) => {
   let id = req.params.id;
   db.updateRestaurantById(req.body, id)
     .then(() => {
@@ -152,7 +152,7 @@ app.put("/api/restaurants/:id", (req, res) => {
 /*
     Route for the api to delete a particular restaurant(document) with it's id as the search filter
 */
-app.delete("/api/restaurants/:id", (req, res) => {
+app.delete("/api/restaurants/:id", auth, (req, res) => {
   let id = req.params.id;
   db.deleteRestaurantById(id)
     .then(() => {

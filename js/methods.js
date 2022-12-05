@@ -51,6 +51,7 @@ let methods = {
     }
   },
   registerUser: async (name, email, password) => {
+
     const OldUser = await userSchema.findOne({ email });
     console.log(OldUser);
     if (OldUser) {
@@ -65,6 +66,9 @@ let methods = {
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
     });
+    console.log(encryptedPassword)
+    console.log( process.env.TOKEN_KEY)
+   
 
     const token = jwt.sign(
       { user_id: user._id, email },
@@ -73,6 +77,8 @@ let methods = {
         expiresIn: "2h",
       }
     );
+
+    console.log(token)
     // save user token
     user.token = token;
     // return new user
