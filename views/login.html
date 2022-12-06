@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login to Application</title>
+    <link rel="stylesheet" href="../../public/stylesheets/styles.css" />
+  </head>
+  <header>Restaurant DB Management</header>
+  <body>
+    <h2>Looking for nearby restaurants?</h2>
+    <h3>Let's get you Logged in:</h3>
+    <form
+      method="POST"
+      action="/api/login"
+      enctype="application/x-www-form-urlencoded"
+    >
+      <label> Name: </label><br />
+      <input type="text" name="name" placeholder="e.g. John, Cassie" /><br />
+      <label> Email :</label><br />
+      <input type="text" name="email" placeholder="xyz@abc.com" /><br />
+      <label> Password :</label><br />
+      <input type="password" name="password" placeholder="*****" /><br />
+      <input type="submit" value="Login" />
+    </form>
+  </body>
+  <footer>By Bhupinder, Manan and Berk</footer>
+</html>

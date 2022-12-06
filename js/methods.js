@@ -101,6 +101,8 @@ let methods = {
       // save user token
       user.token = token;
       // user
+      console.log(user)
+      console.log("______________")
       return user;
     } else {
       return Promise.reject("Invalid Credentials");

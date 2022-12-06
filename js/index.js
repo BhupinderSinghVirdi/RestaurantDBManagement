@@ -16,6 +16,7 @@ const { query, validationResult } = require("express-validator");
 const { url } = require("inspector");
 const auth = require("../js/auth.js");
 const exphbs = require("express-handlebars");
+const localStorage = require("node-localStorage").localStorage;
 
 var port = process.env.PORT || 8000;
 require("dotenv").config();
@@ -48,16 +49,100 @@ app.set("view engine", ".hbs");
 
 //mongoose.connect(database.url);
 
+
+/*
+***********************************************************************************************************************************
+*/
+
 // UI routes :
 
-app.get("/getDisplayDetails", (req, res) => {
+/*
+  Route to Make login page as the landing page of the application
+*/
 
-  res.render("Table", {
-    data: {},
-    layout: false
-  });
+app.get("/", (req,res)=> {
+  res.redirect("/api/login");
 })
 
+/*
+  Route to get the static html page for User to login into the application
+*/
+
+app.get("/api/login",(req,res) => {
+
+
+  res.sendFile("C:/Users/Bhupinder/Documents/GitHub/RestaurantDBManagement/views/login.html")
+
+  // res.render("login",{
+  //   data: {},
+  //   layout: false
+  // })
+})
+
+app.post("/api/login" , (req,res)=>{
+  const { name, email, password } = req.body;
+
+  if (!(name && email && password)) {
+    res.status(400).json({
+      message: `Bad Request. Please provide all details in the request.`,
+    });
+  }
+
+  if (typeof window !== 'undefined') {
+    console.log('You are on the browser')
+    // 👉️ can use localStorage here
+  } else {
+    console.log('You are on the server')
+    // 👉️ can't use localStorage
+  }
+
+
+  db.registerUser(name, email, password)
+    .then((data) => {
+      // req.headers.set('token', data.token);
+      res.status(200).json({ data });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: `Server error: ${err}`,
+      });
+    });
+    // localStorage.setItem('token', data.token)
+    
+})
+
+app.get("/api/displayRestuarantsDetails", (req, res) => {
+
+  res.sendFile("C:/Users/Bhupinder/Documents/GitHub/RestaurantDBManagement/views/displayRestuarants.html")
+
+  // res.render("Table", {
+  //   data: {},
+  //   layout: false
+  // });
+})
+
+app.get("/api/displayRestuarants", (req,res) => {
+  let page = req.query.page;
+  let perPage = req.query.perPage;
+  let borough = req.query.borough;
+
+  console.log(borough);
+  db.getAllRestaurants(page, perPage, borough)
+    .then((data) => {
+      console.log(data);
+      res.status(200).json({ data });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: `Server error: ${err}`,
+      });
+    });
+})
+
+
+/*
+**********************************************************************************************************************************
+*/
 //this module the following routes to Our WEB api
 
 /*
@@ -97,7 +182,9 @@ app.post("/api/restaurantusers/login",(req, res) => {
   }
   db.loginUser(email, password)
     .then((data) => {
-      res.status(200).json({ data });
+      console.log(data)
+      res.header.set('token', data.token);
+      res.cookie('token', data.token).status(200).json({ data });
     })
     .catch((err) => {
       res.status(500).json({
@@ -197,6 +284,10 @@ app.delete("/api/restaurants/:id", auth, (req, res) => {
         message: `Server error: ${err}`,
       });
     });
+});
+
+app.get("*", function (req, res) {
+  res.render("error", { title: "Error", message: "Wrong Route" , layout: false});
 });
 
 db.initialize(connect_url.url)
