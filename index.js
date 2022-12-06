@@ -255,4 +255,4 @@ db.initialize(connect_url.url)
     res.sendStatus(500).json({
       message: `Server error: ${err}`,
     });
-  });
+});
