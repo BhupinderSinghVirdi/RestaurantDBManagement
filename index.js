@@ -10,21 +10,25 @@
 var express = require("express");
 const app = express();
 var bodyParser = require("body-parser");
-const db = require("./methods");
-let connect_url = require("../config/database");
+const db = require("./js/methods");
+let connect_url = require("./config/database");
 const { query, validationResult } = require("express-validator");
 const { url } = require("inspector");
-const auth = require("../js/auth.js");
+const auth = require("./js/auth.js");
 const exphbs = require("express-handlebars");
-const localStorage = require("node-localStorage").localStorage;
+const path = require("path");
+const { mainModule } = require("process");
 
 var port = process.env.PORT || 8000;
 require("dotenv").config();
 app.use(bodyParser.urlencoded({ extended: "true" })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: "application/vnd.api+json" })); // parse application/vnd.api+json as json
-
+app.use(express.urlencoded({ extended: true }));
 require("dotenv").config();
+
+// Middleware method to specific images and css files
+app.use(express.static(path.join(__dirname, "public")));
 
 const HBS = exphbs.create({
   //Create custom HELPER
@@ -38,7 +42,7 @@ const HBS = exphbs.create({
     strong: function (options) {
       return "<strong>" + options.fn(this);
     },
-  },
+  }, defaultLayout : 'main.hbs'
 });
 
 app.engine(".hbs", HBS.engine);
@@ -63,9 +67,7 @@ app.get("/", (req, res) => {
 */
 
 app.get("/api/login", (req, res) => {
-  res.sendFile(
-    "C:/Users/Bhupinder/Documents/GitHub/RestaurantDBManagement/views/login.html"
-  );
+  res.render("login.hbs", { title: "Login", message: "try"});
   // res.render("login",{
   //   data: {},
   //   layout: false
@@ -96,9 +98,10 @@ app.post("/api/login", (req, res) => {
 });
 
 app.get("/api/displayRestuarantsDetails", auth, (req, res) => {
-  res.sendFile(
-    "C:/Users/Bhupinder/Documents/GitHub/RestaurantDBManagement/views/displayRestuarants.html"
-  );
+  res.render("displayRestuarantsDetails.hbs", { title: "Details", message: "try"});
+  // res.sendFile(
+  //   "C:/Users/Bhupinder/Documents/GitHub/RestaurantDBManagement/views/displayRestuarants.html"
+  // );
 
   // res.render("Table", {
   //   data: {},
@@ -113,7 +116,8 @@ app.get("/api/displayRestuarants", auth, (req, res) => {
 
   db.getAllRestaurants(page, perPage, borough)
     .then((data) => {
-      res.status(200).json({ data });
+      res.render("displayRestuarants.hbs",{ title: "Display", data: {data}})
+      // res.status(200).json({ data });
     })
     .catch((err) => {
       res.status(500).json({
@@ -265,13 +269,13 @@ app.delete("/api/restaurants/:id", auth, (req, res) => {
     });
 });
 
-app.get("*", function (req, res) {
-  res.render("error", {
-    title: "Error",
-    message: "Wrong Route",
-    layout: false,
-  });
-});
+// app.get("*", function (req, res) {
+//   // res.render("error", {
+//   //   title: "Error",
+//   //   message: "Wrong Route",
+//   //   layout: false,
+//   // });
+// });
 
 db.initialize(connect_url.url)
   .then(() => {

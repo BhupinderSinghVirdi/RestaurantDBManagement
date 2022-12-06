@@ -1,0 +1,28 @@
+<main id="main">
+  <div id="Sample Resturatant">
+
+  </div>
+  <table border="1">
+    <tr>
+      <th>Restaurant Id</th>
+      <th>Name</th>
+      <th>Address</th>
+      <th>Borough</th>
+      <th>Cuisine</th>
+      <th>Grades</th>
+    </tr>
+    {{#each data}}
+      <tr>
+        {{! Step-8: This #if expression is for step 8, skips the books where page count is 0}}
+        <tr>
+          <td>{{this.restaurant_id}}</td>
+          <td>{{this.name}}</td>
+          <td>{{this.address}}</td>
+          <td>{{this.borough}}</td>
+          <td>{{this.cuisine}}</td>
+          <td>{{this.grades}}</td>
+        </tr>
+      </tr>
+    {{/each}}
+  </table>
+</main>

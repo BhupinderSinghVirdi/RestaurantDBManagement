@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
   <head>
     <title>Welcom</title>
@@ -23,4 +23,59 @@
     </form>
   </body>
   <footer>By Bhupinder, Manan and Berk</footer>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Welcom</title>
+    <!--<link rel="stylesheet" href="../../public/stylesheets/styles.css" />-->
+    <link rel="stylesheet" href="../../public/stylesheets/login.css" />
+  </head>
+  <div class="login-box">
+   <h1 style="text-align:center; color: antiquewhite;">Restaurant DB Management</h1>
+  <header></header>
+  <body>
+    <h3>Enter some Information for Us to find them. Remember! These are sorted :)</h3>
+    <form
+      method="GET"
+      action="/api/displayRestuarants"
+      enctype="application/x-www-form-urlencoded"
+    >
+
+    <div class="user-box">
+      
+      <div class="user-box">
+        <input type="text" name="page" required="true">
+        <label>Page Number</label>
+      </div>
+
+    <!--  <label> Page Number: </label><br />
+      <input type="text" name="page" placeholder="e.g. 1-100" /><br /> -->
+      <div class="user-box">
+        <input type="text" name="perPage" required="true">
+        <label>Items per page</label>
+      </div>
+     <!-- <label> Items per page :</label><br />
+      <input type="text" name="perPage" placeholder="e.g. 5,10,15" /><br /> -->
+      <div class="user-box">
+        <input type="text" name="borough" required="true">
+        <label>Which Borough are you looking in</label>
+      </div>
+     <!-- <label> Which Borough are you looking in:</label><br />
+      <input type="text" name="borough" placeholder="e.g. Brookyln" /><br /> -->
+<!-- 
+      <a href="#">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        Search
+      </a> -->
+
+      <input type="submit" value="Search" />
+    </form>
+  </body>
+  <footer>By Bhupinder, Manan and Berk</footer>
+</div>
 </html>
