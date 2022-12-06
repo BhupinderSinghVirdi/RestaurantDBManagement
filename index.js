@@ -10,24 +10,104 @@
 var express = require("express");
 const app = express();
 var bodyParser = require("body-parser");
-const db = require("./methods");
-let connect_url = require("../config/database");
+const db = require("./js/methods");
+let connect_url = require("./config/database");
 const { query, validationResult } = require("express-validator");
 const { url } = require("inspector");
-const auth = require("../js/auth.js");
+const auth = require("./js/auth.js");
+const exphbs = require("express-handlebars");
+const path = require("path");
+const { mainModule } = require("process");
 
 var port = process.env.PORT || 8000;
 require("dotenv").config();
 app.use(bodyParser.urlencoded({ extended: "true" })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: "application/vnd.api+json" })); // parse application/vnd.api+json as json
-
+app.use(express.urlencoded({ extended: true }));
 require("dotenv").config();
-// query validation
 
-//mongoose.connect(database.url);
+// Middleware method to specific images and css files
+app.use(express.static(path.join(__dirname, "public")));
 
-//this module the following routes to Our WEB api
+const HBS = exphbs.create({
+  defaultLayout: "main.hbs",
+});
+
+app.engine(".hbs", HBS.engine);
+app.set("view engine", ".hbs");
+
+/*
+ **************************************************** UI routes :*******************************************************************************
+ */
+
+/*
+  Route to Make login page as the landing page of the application
+*/
+
+app.get("/", (req, res) => {
+  res.redirect("/api/login");
+});
+
+/*
+  Route to get the static html page for User to login into the application
+*/
+
+app.get("/api/login", (req, res) => {
+  res.render("login.hbs", { title: "Login", message: "try" });
+});
+
+app.post("/api/login", (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!(name && email && password)) {
+    res.status(400).json({
+      message: `Bad Request. Please provide all details in the request.`,
+    });
+  }
+
+  db.registerUser(name, email, password)
+    .then((data) => {
+      res
+        .cookie("token", data.token)
+        .status(200)
+        .redirect("/api/displayRestuarantsDetails");
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: `Server error: ${err}`,
+      });
+    });
+});
+
+app.get("/api/displayRestuarantsDetails", auth, (req, res) => {
+  res.render("displayRestuarantsDetails.hbs", {
+    title: "Details",
+    message: "try",
+  });
+});
+
+app.get("/api/displayRestuarants", auth, (req, res) => {
+  let page = req.query.page;
+  let perPage = req.query.perPage;
+  let borough = req.query.borough;
+
+  db.getAllRestaurants(page, perPage, borough)
+    .then((data) => {
+      console.log(data);
+      res.render("displayRestuarants.hbs", { title: "Display", data: data });
+      // res.status(200).json({ data });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: `Server error: ${err}`,
+      });
+    });
+});
+
+/*
+ ***************************************************this module the following routes to Our WEB api*******************************************************************************
+ */
 
 /*
   Route to add the user to DB to gather the entered password
@@ -55,7 +135,7 @@ app.post("/api/restaurantusers/register", (req, res) => {
 /*
   Route to verify the password and generate auth token for other routes
 */
-app.post("/api/restaurantusers/login",(req, res) => {
+app.post("/api/restaurantusers/login", (req, res) => {
   const { email, password } = req.body;
 
   // Validate user input
@@ -66,7 +146,8 @@ app.post("/api/restaurantusers/login",(req, res) => {
   }
   db.loginUser(email, password)
     .then((data) => {
-      res.status(200).json({ data });
+      res.header.set("token", data.token);
+      res.cookie("token", data.token).status(200).json({ data });
     })
     .catch((err) => {
       res.status(500).json({
@@ -78,15 +159,13 @@ app.post("/api/restaurantusers/login",(req, res) => {
 /*
     Route for the api to get restaurants in sorted by restaurant id but search done with page, pageNumber and Borough parameters
 */
-app.get("/api/restaurants", auth , (req, res) => {
+app.get("/api/restaurants", auth, (req, res) => {
   let page = req.query.page;
   let perPage = req.query.perPage;
   let borough = req.query.borough;
 
-  console.log(borough);
   db.getAllRestaurants(page, perPage, borough)
     .then((data) => {
-      console.log(data);
       res.status(200).json({ data });
     })
     .catch((err) => {
@@ -99,7 +178,7 @@ app.get("/api/restaurants", auth , (req, res) => {
 /*
     Route for the api to get a particular restaurant with it's id
 */
-app.get("/api/restaurants/:id", auth,(req, res) => {
+app.get("/api/restaurants/:id", auth, (req, res) => {
   let id = req.params.id;
   db.getRestaurantById(id)
     .then((data) => {
