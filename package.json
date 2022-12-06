@@ -4,7 +4,7 @@
   "description": "This repo has the api for various CRUD operation on a sample restaurant DB with multiple libraries for different purposes.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "express": "npm install express",
     "cors": "npm install cors",
