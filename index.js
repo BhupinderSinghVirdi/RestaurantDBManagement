@@ -31,28 +31,15 @@ require("dotenv").config();
 app.use(express.static(path.join(__dirname, "public")));
 
 const HBS = exphbs.create({
-  //Create custom HELPER
-  helpers: {
-    sample: function () {
-      return 100;
-    },
-    calculation: function (num) {
-      return (calculation = num + 10);
-    },
-    strong: function (options) {
-      return "<strong>" + options.fn(this);
-    },
-  }, defaultLayout : 'main.hbs'
+  defaultLayout: "main.hbs",
 });
 
 app.engine(".hbs", HBS.engine);
 app.set("view engine", ".hbs");
 
 /*
- ***********************************************************************************************************************************
+ **************************************************** UI routes :*******************************************************************************
  */
-
-// UI routes :
 
 /*
   Route to Make login page as the landing page of the application
@@ -67,11 +54,7 @@ app.get("/", (req, res) => {
 */
 
 app.get("/api/login", (req, res) => {
-  res.render("login.hbs", { title: "Login", message: "try"});
-  // res.render("login",{
-  //   data: {},
-  //   layout: false
-  // })
+  res.render("login.hbs", { title: "Login", message: "try" });
 });
 
 app.post("/api/login", (req, res) => {
@@ -98,15 +81,10 @@ app.post("/api/login", (req, res) => {
 });
 
 app.get("/api/displayRestuarantsDetails", auth, (req, res) => {
-  res.render("displayRestuarantsDetails.hbs", { title: "Details", message: "try"});
-  // res.sendFile(
-  //   "C:/Users/Bhupinder/Documents/GitHub/RestaurantDBManagement/views/displayRestuarants.html"
-  // );
-
-  // res.render("Table", {
-  //   data: {},
-  //   layout: false
-  // });
+  res.render("displayRestuarantsDetails.hbs", {
+    title: "Details",
+    message: "try",
+  });
 });
 
 app.get("/api/displayRestuarants", auth, (req, res) => {
@@ -116,7 +94,8 @@ app.get("/api/displayRestuarants", auth, (req, res) => {
 
   db.getAllRestaurants(page, perPage, borough)
     .then((data) => {
-      res.render("displayRestuarants.hbs",{ title: "Display", data: {data}})
+      console.log(data);
+      res.render("displayRestuarants.hbs", { title: "Display", data: data });
       // res.status(200).json({ data });
     })
     .catch((err) => {
@@ -127,9 +106,8 @@ app.get("/api/displayRestuarants", auth, (req, res) => {
 });
 
 /*
- **********************************************************************************************************************************
+ ***************************************************this module the following routes to Our WEB api*******************************************************************************
  */
-//this module the following routes to Our WEB api
 
 /*
   Route to add the user to DB to gather the entered password
@@ -268,14 +246,6 @@ app.delete("/api/restaurants/:id", auth, (req, res) => {
       });
     });
 });
-
-// app.get("*", function (req, res) {
-//   // res.render("error", {
-//   //   title: "Error",
-//   //   message: "Wrong Route",
-//   //   layout: false,
-//   // });
-// });
 
 db.initialize(connect_url.url)
   .then(() => {

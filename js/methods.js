@@ -34,7 +34,6 @@ let methods = {
   },
   updateRestaurantById: async (data, id) => {
     document = await modelSchema.updateOne({ _id: id }, { $set: data });
-    console.log(document);
   },
   deleteRestaurantById: async (id) => {
     await modelSchema.deleteOne({ _id: id }).exec();
@@ -45,15 +44,14 @@ let methods = {
         .find({ borough: borough })
         .sort({ restaurant_id: 1 })
         .skip((page - 1) * +perPage)
-        .limit(perPage);
+        .limit(perPage)
+        .lean();
     } else {
       return Promise.reject("Error: Missing parameters in the query string");
     }
   },
   registerUser: async (name, email, password) => {
-
     const OldUser = await userSchema.findOne({ email });
-    console.log(OldUser);
     if (OldUser) {
       return Promise.reject(`User Already Exists, please Login now.`);
     }
@@ -66,10 +64,6 @@ let methods = {
       email: email.toLowerCase(), // sanitize: convert email to lowercase
       password: encryptedPassword,
     });
-    console.log(encryptedPassword)
-    console.log( process.env.TOKEN_KEY)
-   
-
     const token = jwt.sign(
       { user_id: user._id, email },
       process.env.TOKEN_KEY,
@@ -78,7 +72,6 @@ let methods = {
       }
     );
 
-    console.log(token)
     // save user token
     user.token = token;
     // return new user
@@ -101,8 +94,7 @@ let methods = {
       // save user token
       user.token = token;
       // user
-      console.log(user)
-      console.log("______________")
+      
       return user;
     } else {
       return Promise.reject("Invalid Credentials");

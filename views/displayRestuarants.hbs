@@ -13,14 +13,13 @@
     </tr>
     {{#each data}}
       <tr>
-        {{! Step-8: This #if expression is for step 8, skips the books where page count is 0}}
         <tr>
           <td>{{this.restaurant_id}}</td>
           <td>{{this.name}}</td>
-          <td>{{this.address}}</td>
+          <td>{{this.address.street}}</td>
           <td>{{this.borough}}</td>
           <td>{{this.cuisine}}</td>
-          <td>{{this.grades}}</td>
+          <td>{{this.grades.0.grade}}</td>
         </tr>
       </tr>
     {{/each}}
