@@ -10,21 +10,23 @@
 const jwt = require("jsonwebtoken");
 
 const verifyToken = async (req, res, next) => {
-  console.log(req.headers);
+    let token;
+
+    if (!req.headers["authorization"]){
+        let cookieSplit = req.headers["cookie"].split("=");
+        token = cookieSplit[1];
+    }else {
+        token = req.headers["authorization"]
+    }
   
-  const token = req.headers['authorization'];
-  console.log(token);
+
   if (!token) {
     return res.status(403).send("A token is required..");
   }
-
   try {
     const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-
-    console.log(decoded);
     req.user = decoded;
   } catch (err) {
-    console.log(err)
     return res.status(401).send("Invalid Token");
   }
   return next();
